@@ -7,11 +7,23 @@ const myPeer = new Peer({host:'peer-server-video-chat.herokuapp.com', secure:tru
 }) */
 const myVideo = document.createElement('video')
 myVideo.muted = true
+
+const videoEnabledIcon = document.getElementById('videoEnabledIcon')
+const videoDisabledIcon = document.getElementById('videoDisabledIcon')
+
+
+const muteEnabledIcon = document.getElementById('muteEnabledIcon')
+const muteDisabledIcon = document.getElementById('muteDisabledIcon')
+
 const peers = {}
+
+let myVideoStream;
+
 navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
 }).then(stream => {
+  myVideoStream = stream;
   addVideoStream(myVideo, stream)
 
   myPeer.on('call', call => {
@@ -54,4 +66,41 @@ function addVideoStream(video, stream) {
     video.play()
   })
   videoGrid.append(video)
+}
+
+
+
+//this is aimed to enable or disable mic
+function Mute_Option_Handler(action){
+  if(action === 'enable'){
+    myVideoStream.getAudioTracks()[0].enabled = true;
+    muteDisabledIcon.classList.add("hideElement");
+    muteEnabledIcon.classList.remove("hideElement");
+  }else{
+    myVideoStream.getAudioTracks()[0].enabled = false;
+    muteEnabledIcon.classList.add("hideElement");
+    muteDisabledIcon.classList.remove("hideElement");
+  }
+  
+
+}
+
+//this is aimed to enable or disable video
+function Video_Option_Handler(action){
+
+ if(action === 'enable'){
+  myVideoStream.getVideoTracks()[0].enabled = true;
+  videoDisabledIcon.classList.add("hideElement");
+  videoEnabledIcon.classList.remove("hideElement");
+ }else{
+  myVideoStream.getVideoTracks()[0].enabled = false;
+  videoDisabledIcon.classList.remove("hideElement");
+  videoEnabledIcon.classList.add("hideElement");
+ }
+ 
+}
+
+
+function Leave_Call(){
+  socket.disconnect()
 }
