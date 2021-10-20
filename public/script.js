@@ -40,12 +40,19 @@ navigator.mediaDevices.getUserMedia({
 })
 
 socket.on('user-disconnected', userId => {
+  console.log('rea user deconected',userId)
   if (peers[userId]) peers[userId].close()
 })
 
 myPeer.on('open', id => {
   socket.emit('join-room', ROOM_ID, id)
 })
+var myDataConnection = 
+myPeer.on('connection', function(dataConnection) {
+   console.log(dataConnection)
+   myDataConnection = dataConnection
+  
+  });
 
 function connectToNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
@@ -101,6 +108,36 @@ function Video_Option_Handler(action){
 }
 
 
+var  chatInput = document.getElementById("chatInput");
+var  sendButton = document.getElementById("sendButton");
+var  chatMessages = document.getElementById("chatMessages");
+sendButton.addEventListener("click", (e) => {
+  if (chatInput.value.length !== 0) {
+    socket.emit("message", chatInput.value);
+    chatInput.value = "";
+  }
+});
+
+
+
+socket.on("createMessage", (message) => {
+  chatMessages.innerHTML =
+    chatMessages.innerHTML +
+    `<div class="message">
+        <b><i class="far fa-user-circle"></i> <span> </span> </b>
+        <span style="color:white;">${message}</span>
+    </div>`;
+});
+
+
+
 function Leave_Call(){
-  socket.disconnect()
+ 
+ //socket.close() 
+ //socket.disconnect(true)
+ //socket.leave(socket.current_room)
+ //socket.leave(ROOM_ID)
+ //console.log('this is the room id',ROOM_ID)
+ //socket.emit('leave-call')
+
 }
