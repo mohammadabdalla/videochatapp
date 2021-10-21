@@ -1,5 +1,11 @@
 const express = require('express')
 const app = express()
+const path = require('path')
+const dotenv = require('dotenv').config();
+var connectMongoSites = require('./mongo/config')
+connectMongoSites()
+
+var mongoMethods = require('./mongo/controller')
 const server = require('http').Server(app)
 const io = require('socket.io')(server, {
   cors: {
@@ -10,30 +16,50 @@ const { v4: uuidV4 } = require('uuid')
 
 
 app.set('view engine', 'ejs')
-app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json())
 
-
-app.get('/disconnect', (req, res) => {
-  console.log('from inside the disconnect method')
-  
-  res.json()
-  //socket.disconnect()
+ 
+app.get('/leave', (req, res) => {
+  res.render('error' , {content: 'You have left the chat!'})
 }) 
 
+app.get('/joinRoom', (req, res) => {
+  res.render('joinRoom')
+}) 
 
-app.get('/', (req, res) => {
-  res.redirect(`/${uuidV4()}`)
+app.get('/rooms/:room', async(req, res ) => {
+  var data = await mongoMethods.find_data(req.params.room)
+  if(data.length > 0){
+    res.render('room', { roomId: req.params.room })
+
+  }else{
+   res.render('error' , {content: `Sorry, the room you are looking for doesn't exist!`})
+  }
+ 
 })
 
-var current_room_id
-app.get('/:room', (req, res) => {
-  //current_room_id = req.params.room
-  res.render('room', { roomId: req.params.room })
+app.get('*', async(req, res ) => {
+  res.render('pageNotFound')
 })
+
+
+app.post('/createRoom', async(req, res ) => {
+    
+    if(req.body.room_id){
+      var data = await mongoMethods.insert_data(req.body.room_id)
+      res.status(200).json(data)
+    }else{
+      res.status(400)
+      throw new Error('An error occurred!')
+    }
+})
+ 
+
+
 
 io.on('connection', socket => {
   socket.on('join-room', (roomId, userId) => {
-    current_room_id = roomId
     socket.join(roomId)
     socket.to(roomId).broadcast.emit('user-connected', userId)
 
@@ -47,12 +73,7 @@ io.on('connection', socket => {
   })
 
   
-socket.on('leave-call',()=>{ 
-  console.log('reached the leave call' , current_room_id)
- socket.leave(current_room_id)
 })
-})
- 
 
 
 server.listen(process.env.PORT ||3000)

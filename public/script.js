@@ -5,6 +5,7 @@ const myPeer = new Peer({host:'peer-server-video-chat.herokuapp.com', secure:tru
   host: '/',
   port: '3001'
 }) */
+//tele-api-test.nixpend.com
 const myVideo = document.createElement('video')
 myVideo.muted = true
 
@@ -123,9 +124,9 @@ sendButton.addEventListener("click", (e) => {
 socket.on("createMessage", (message) => {
   chatMessages.innerHTML =
     chatMessages.innerHTML +
-    `<div class="message">
-        <b><i class="far fa-user-circle"></i> <span> </span> </b>
-        <span style="color:white;">${message}</span>
+    `<div  style="margin-bottom:10px;margin-top:10px;">
+        <i class="far fa-user-circle" style="color:#EEEEEE;font-size:20px;margin-left:5px;"></i> <span style="color:#EEEEEE;font-size:20px;">user</span>  
+        <div style="padding:5px;background-color:#EEEEEE;width:90%;border-radius:10px;margin:5px;overflow-wrap: break-word;" >${message}</div>
     </div>`;
 });
 
@@ -133,11 +134,6 @@ socket.on("createMessage", (message) => {
 
 function Leave_Call(){
  
- //socket.close() 
- //socket.disconnect(true)
- //socket.leave(socket.current_room)
- //socket.leave(ROOM_ID)
- //console.log('this is the room id',ROOM_ID)
- //socket.emit('leave-call')
-
+ window.location.href = "/leave";
 }
+
