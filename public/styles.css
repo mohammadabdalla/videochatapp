@@ -32,8 +32,8 @@ flex-grow: 8;
   }
   
   video {
-    width: 300px;
-    height: 300px;
+    width: 30%;
+    
     border-radius: 10px;
     margin: 10px;
   }
@@ -145,3 +145,32 @@ div::-webkit-scrollbar-thumb {
   background: rgb(13, 28, 49); 
   border-radius: 15px;
 } 
+
+
+@media only screen and (max-width: 600px) {
+  video {
+    width: 80%;
+  }
+  #chat-container{
+    width: 90% ;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+ 
+  #chat-container{
+    width: 90% ;
+  }
+}
+@media only screen and (max-width: 400px) {
+ 
+  #chat-container{
+    width: 100% ;
+  }
+}
+
+@media only screen and (min-width: 601px) and (max-width: 1000px) {
+  video {
+    width: 50%;
+  }
+}

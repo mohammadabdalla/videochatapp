@@ -46,7 +46,7 @@ socket.on('user-disconnected', userId => {
 })
 
 myPeer.on('open', id => {
-  socket.emit('join-room', ROOM_ID, id , user_name)
+  socket.emit('join-room', ROOM_ID, id)
 })
 var myDataConnection = 
 myPeer.on('connection', function(dataConnection) {
@@ -58,7 +58,6 @@ myPeer.on('connection', function(dataConnection) {
 function connectToNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
   const video = document.createElement('video')
-  console.log('reached the connecttonewuser')
   call.on('stream', userVideoStream => {
     addVideoStream(video, userVideoStream)
   })
@@ -105,10 +104,13 @@ if(action=='show'){
 }
 
 
+
+
 //this is aimed to enable or disable video
 function Video_Option_Handler(action){
+  //myVideo.remove()
 
- if(action === 'enable'){
+  if(action === 'enable'){
   myVideoStream.getVideoTracks()[0].enabled = true;
   videoDisabledIcon.classList.add("hideElement");
   videoEnabledIcon.classList.remove("hideElement");
@@ -116,7 +118,7 @@ function Video_Option_Handler(action){
   myVideoStream.getVideoTracks()[0].enabled = false;
   videoDisabledIcon.classList.remove("hideElement");
   videoEnabledIcon.classList.add("hideElement");
- }
+ } 
  
 }
 
@@ -140,24 +142,23 @@ chatInput.addEventListener("keydown", (e) => {
     }
   }
 });
+
 const notificationFlag = document.getElementById('notificationFlag')
 function show_notification(action){
   if(action=='show'){
     notificationFlag.classList.remove('hideElement')
-
   }else{
     notificationFlag.classList.add('hideElement')
   }
 }
 
-socket.on("createMessage", (message , userName) => {
-  {/* <i class="far fa-user-circle" style="color:#EEEEEE;font-size:20px;margin-left:5px;"></i> */}
-  console.log('new message')
+socket.on("createMessage", (message) => {
+  //console.log('new message')
   show_notification('show')
   chatMessages.innerHTML =
     chatMessages.innerHTML +
     `<div  style="margin-bottom:10px;margin-top:10px;">
-          <span style="color:#EEEEEE;font-size:20px;margin-left:5px;">${user_name ==userName ? 'Me' : userName}</span>  
+        <i class="far fa-user-circle" style="color:#EEEEEE;font-size:20px;margin-left:5px;"></i> <span style="color:#EEEEEE;font-size:20px;">user</span>  
         <div style="padding:5px;background-color:#EEEEEE;width:90%;border-radius:10px;margin:5px;overflow-wrap: break-word;" >${message}</div>
     </div>`;
 });
