@@ -46,7 +46,7 @@ socket.on('user-disconnected', userId => {
 })
 
 myPeer.on('open', id => {
-  socket.emit('join-room', ROOM_ID, id)
+  socket.emit('join-room', ROOM_ID, id , user_name)
 })
 var myDataConnection = 
 myPeer.on('connection', function(dataConnection) {
@@ -137,7 +137,7 @@ sendButton.addEventListener("click", (e) => {
 chatInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     if (chatInput.value.length !== 0) {
-      socket.emit("message", chatInput.value);
+      socket.emit("message", chatInput.value , user_name);
       chatInput.value = "";
     }
   }
@@ -154,6 +154,7 @@ function show_notification(action){
 
 socket.on("createMessage", (message , userName) => {
   //console.log('new message')
+  console.log('htis is the user name',userName)
   show_notification('show')
   chatMessages.innerHTML =
     chatMessages.innerHTML +
