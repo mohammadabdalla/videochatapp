@@ -152,13 +152,13 @@ function show_notification(action){
   }
 }
 
-socket.on("createMessage", (message) => {
+socket.on("createMessage", (message , userName) => {
   //console.log('new message')
   show_notification('show')
   chatMessages.innerHTML =
     chatMessages.innerHTML +
     `<div  style="margin-bottom:10px;margin-top:10px;">
-        <i class="far fa-user-circle" style="color:#EEEEEE;font-size:20px;margin-left:5px;"></i> <span style="color:#EEEEEE;font-size:20px;">user</span>  
+        <i class="far fa-user-circle" style="color:#EEEEEE;font-size:20px;margin-left:5px;"></i> <span style="color:#EEEEEE;font-size:20px;">${userName == user_name ? 'Me' : userName}</span>  
         <div style="padding:5px;background-color:#EEEEEE;width:90%;border-radius:10px;margin:5px;overflow-wrap: break-word;" >${message}</div>
     </div>`;
 });
