@@ -46,7 +46,7 @@ socket.on('user-disconnected', userId => {
 })
 
 myPeer.on('open', id => {
-  socket.emit('join-room', ROOM_ID, id)
+  socket.emit('join-room', ROOM_ID, id , user_name)
 })
 var myDataConnection = 
 myPeer.on('connection', function(dataConnection) {
@@ -58,6 +58,7 @@ myPeer.on('connection', function(dataConnection) {
 function connectToNewUser(userId, stream) {
   const call = myPeer.call(userId, stream)
   const video = document.createElement('video')
+  console.log('reached the connecttonewuser')
   call.on('stream', userVideoStream => {
     addVideoStream(video, userVideoStream)
   })
@@ -89,9 +90,20 @@ function Mute_Option_Handler(action){
     muteEnabledIcon.classList.add("hideElement");
     muteDisabledIcon.classList.remove("hideElement");
   }
-  
-
 }
+
+const chatContainer = document.getElementById("chat-container")
+
+function ConversationBarHandler(action){
+  show_notification('hide')
+if(action=='show'){
+  console.log('reached the open')
+  chatContainer.classList.add("open");
+}else{
+  chatContainer.classList.remove("open");
+}
+}
+
 
 //this is aimed to enable or disable video
 function Video_Option_Handler(action){
@@ -120,12 +132,32 @@ sendButton.addEventListener("click", (e) => {
 });
 
 
+chatInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    if (chatInput.value.length !== 0) {
+      socket.emit("message", chatInput.value);
+      chatInput.value = "";
+    }
+  }
+});
+const notificationFlag = document.getElementById('notificationFlag')
+function show_notification(action){
+  if(action=='show'){
+    notificationFlag.classList.remove('hideElement')
 
-socket.on("createMessage", (message) => {
+  }else{
+    notificationFlag.classList.add('hideElement')
+  }
+}
+
+socket.on("createMessage", (message , userName) => {
+  {/* <i class="far fa-user-circle" style="color:#EEEEEE;font-size:20px;margin-left:5px;"></i> */}
+  console.log('new message')
+  show_notification('show')
   chatMessages.innerHTML =
     chatMessages.innerHTML +
     `<div  style="margin-bottom:10px;margin-top:10px;">
-        <i class="far fa-user-circle" style="color:#EEEEEE;font-size:20px;margin-left:5px;"></i> <span style="color:#EEEEEE;font-size:20px;">user</span>  
+          <span style="color:#EEEEEE;font-size:20px;margin-left:5px;">${user_name ==userName ? 'Me' : userName}</span>  
         <div style="padding:5px;background-color:#EEEEEE;width:90%;border-radius:10px;margin:5px;overflow-wrap: break-word;" >${message}</div>
     </div>`;
 });
@@ -133,7 +165,6 @@ socket.on("createMessage", (message) => {
 
 
 function Leave_Call(){
- 
  window.location.href = "/leave";
 }
 

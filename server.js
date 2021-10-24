@@ -20,18 +20,25 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json())
 
  
-app.get('/leave', (req, res) => {
-  res.render('error' , {content: 'You have left the chat!'})
-}) 
+
+
+app.get('/', (req, res) => {
+  res.redirect('/joinRoom')
+})
 
 app.get('/joinRoom', (req, res) => {
   res.render('joinRoom')
 }) 
 
-app.get('/rooms/:room', async(req, res ) => {
+app.get('/leave', (req, res) => {
+  res.render('error' , {content: 'You have left the chat!'})
+}) 
+
+
+app.get('/rooms/:name/:room', async(req, res ) => {
   var data = await mongoMethods.find_data(req.params.room)
   if(data.length > 0){
-    res.render('room', { roomId: req.params.room })
+    res.render('room', { roomId: req.params.room , name:req.params.name })
 
   }else{
    res.render('error' , {content: `Sorry, the room you are looking for doesn't exist!`})
@@ -59,7 +66,7 @@ app.post('/createRoom', async(req, res ) => {
 
 
 io.on('connection', socket => {
-  socket.on('join-room', (roomId, userId) => {
+  socket.on('join-room', (roomId, userId , user_name) => {
     socket.join(roomId)
     socket.to(roomId).broadcast.emit('user-connected', userId)
 
@@ -68,7 +75,7 @@ io.on('connection', socket => {
     })
 
     socket.on("message", (message) => {
-      io.to(roomId).emit("createMessage", message);
+      io.to(roomId).emit("createMessage", message , user_name);
     });
   })
 
