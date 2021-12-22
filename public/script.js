@@ -1,6 +1,12 @@
 const socket = io('/')
 const videoGrid = document.getElementById('video-grid')
-const myPeer = new Peer({host:'peer-server-video-chat.herokuapp.com', secure:true})
+const myPeer = new Peer({
+  host:'peer-server-video-chat.herokuapp.com', 
+  serialization: 'json',
+  secure:true
+})
+//  path: '/peerjs',
+
 /* const myPeer = new Peer(undefined, {
   host: '/',
   port: '3001'
