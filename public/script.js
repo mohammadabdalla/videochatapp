@@ -28,25 +28,31 @@ const peers = {}
 
 let myVideoStream;
 
-navigator.mediaDevices.getUserMedia({
-  video: true,
-  audio: true
-}).then(stream => {
-  myVideoStream = stream;
-  addVideoStream(myVideo, stream)
 
-  myPeer.on('call', call => {
+myPeer.on('call', call => {
+  navigator.mediaDevices.getUserMedia({
+    video: true,
+    audio: true
+  }).then(stream => {
+    myVideoStream = stream;
+    addVideoStream(myVideo, stream)
+
+
     call.answer(stream)
     const video = document.createElement('video')
     call.on('stream', userVideoStream => {
       addVideoStream(video, userVideoStream)
     })
-  })
 
-  socket.on('user-connected', userId => {
-    connectToNewUser(userId, stream)
+    socket.on('user-connected', userId => {
+      connectToNewUser(userId, stream)
+    })
+
+    
   })
+ 
 })
+
 
 socket.on('user-disconnected', userId => {
   console.log('rea user deconected',userId)
