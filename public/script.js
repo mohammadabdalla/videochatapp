@@ -3,9 +3,9 @@ const videoGrid = document.getElementById('video-grid')
 const myPeer = new Peer({
   host:'peer-server-video-chat.herokuapp.com', 
   serialization: 'json',
-  secure:true
 })
 //  path: '/peerjs',
+//  secure:true
 
 /* const myPeer = new Peer(undefined, {
   host: '/',
