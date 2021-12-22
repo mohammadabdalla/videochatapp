@@ -10,9 +10,9 @@ function Join_Room(){
      return
  }
  
- console.log('in the the join room function')
- console.log(`http://localhost:3000/rooms/${name}/${room_id}`)
- window.location.href = `http://localhost:3000/rooms/${name}/${room_id}`
+ //console.log('in the the join room function')
+// console.log(`http://localhost:3000/rooms/${name}/${room_id}`)
+ window.location.href = `https://nix-video-chat-demo-101.herokuapp.com/rooms/${name}/${room_id}`
 
 }
 
