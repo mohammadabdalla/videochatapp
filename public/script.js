@@ -1,6 +1,15 @@
 const socket = io('/')
 const videoGrid = document.getElementById('video-grid')
-const myPeer = new Peer({host:'peer-server-video-chat.herokuapp.com', secure:true})
+let peerConfig = {host:'peer-server-video-chat.herokuapp.com', secure:true}
+
+function checkBrowser(){
+  if(navigator.userAgent.indexOf("Chrome") == -1 ){
+    peerConfig.serialization = "json";
+    console.log('reached to safari method')
+  }
+}
+checkBrowser()
+const myPeer = new Peer(peerConfig)
 /* const myPeer = new Peer(undefined, {
   host: '/',
   port: '3001'
