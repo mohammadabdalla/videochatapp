@@ -28,7 +28,7 @@ const peers = {}
 
 let myVideoStream;
 
-navigator.mediaDevices.getUserMedia({
+/* navigator.mediaDevices.getUserMedia({
   video: true,
   audio: true
 }).then(stream => {
@@ -46,6 +46,57 @@ navigator.mediaDevices.getUserMedia({
 
   socket.on('user-connected', userId => {
     connectToNewUser(userId, stream)
+  })
+}) */
+myPeer.on("call", async (call) => {
+  try {
+      let stream = null;
+      stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true
+      });
+      call.answer(stream) // Send Video Stream On Answer
+      const video = document.createElement('video');
+      // Send Back Video Stream On Stream
+      call.on('stream', userVideoStream => {
+          addVideoStream(video, userVideoStream);
+      });
+  }
+  catch (err) {
+      /* handle the error */
+      console.log('*** ERROR returning the stream: ' + err);
+  }
+});
+
+(async () => {
+  try {
+      let stream = null;
+      stream = await navigator.mediaDevices.getUserMedia(
+          {
+              audio: true,
+              video: true,
+          });
+      if (stream != undefined) {
+          addVideoStream(myVideo, stream);
+          console.log('added own Video stream');
+      } else {
+          console.log('You can only access your audio/video media streams over https');
+          alert('Sorry retry using https, for security reasons Google Media blocks access to your video stream over unsecure http connections');
+      }
+  } catch (err) {
+      /* handle the error */
+      console.log('*** ERROR returning the stream: ' + err);
+      alert('Sorry retry using https, for security reasons Google Media blocks access to your video stream over unsecure http connections');
+  }
+})();
+
+socket.on('user-connected', userId => { // Allow Self To Be Connected To Others
+  console.log('User Connected: ' + userId)
+  navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true
+  }).then(stream => {
+      connectToNewUser(userId, stream)
   })
 })
 
