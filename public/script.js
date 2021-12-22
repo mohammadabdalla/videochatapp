@@ -1,18 +1,10 @@
 const socket = io('/')
 const videoGrid = document.getElementById('video-grid')
-let peerConfig = {
-  host:'peer-server-video-chat.herokuapp.com', 
-}
-
-const myPeer = new Peer(undefined,peerConfig)
-//  path: '/peerjs',
-//  secure:true
-
+const myPeer = new Peer({host:'peer-server-video-chat.herokuapp.com', secure:true})
 /* const myPeer = new Peer(undefined, {
   host: '/',
   port: '3001'
 }) */
-//tele-api-test.nixpend.com
 const myVideo = document.createElement('video')
 myVideo.muted = true
 
